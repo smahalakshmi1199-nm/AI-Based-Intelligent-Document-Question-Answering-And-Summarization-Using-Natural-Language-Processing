@@ -1,0 +1,7 @@
+Flask
+mysql-connector-python
+PyPDF2
+scikit-learn
+numpy
+Werkzeug
+gunicorn
