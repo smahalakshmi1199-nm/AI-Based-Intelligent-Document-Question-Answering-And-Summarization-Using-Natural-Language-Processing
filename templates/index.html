@@ -1,0 +1,958 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>AI Docs Dashboard</title>
+
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- Tailwind Configuration -->
+    <script>
+
+        tailwind.config = {
+
+            theme: {
+
+                extend: {
+
+                    animation: {
+
+                        "fade-in": "fadeIn 0.8s ease-out",
+
+                        "slide-up": "slideUp 0.8s ease-out",
+
+                        "float": "float 4s ease-in-out infinite"
+
+                    },
+
+                    keyframes: {
+
+                        fadeIn: {
+
+                            "0%": {
+                                opacity: "0"
+                            },
+
+                            "100%": {
+                                opacity: "1"
+                            }
+
+                        },
+
+                        slideUp: {
+
+                            "0%": {
+
+                                opacity: "0",
+
+                                transform: "translateY(30px)"
+
+                            },
+
+                            "100%": {
+
+                                opacity: "1",
+
+                                transform: "translateY(0)"
+
+                            }
+
+                        },
+
+                        float: {
+
+                            "0%, 100%": {
+
+                                transform: "translateY(0)"
+
+                            },
+
+                            "50%": {
+
+                                transform: "translateY(-15px)"
+
+                            }
+
+                        }
+
+                    }
+
+                }
+
+            }
+
+        }
+
+    </script>
+
+</head>
+
+
+<body class="bg-slate-950 text-white min-h-screen">
+
+
+    <!-- Animated Background -->
+
+    <div class="fixed inset-0 -z-10 overflow-hidden">
+
+        <div class="absolute top-[-150px] left-[-150px]
+                    w-[400px] h-[400px]
+                    bg-indigo-600/20
+                    rounded-full
+                    blur-3xl
+                    animate-float">
+        </div>
+
+        <div class="absolute bottom-[-150px] right-[-150px]
+                    w-[400px] h-[400px]
+                    bg-purple-600/20
+                    rounded-full
+                    blur-3xl
+                    animate-float">
+        </div>
+
+    </div>
+
+
+    <!-- Main Layout -->
+
+    <div class="flex min-h-screen">
+
+
+        <!-- SIDEBAR -->
+
+        <aside class="w-72
+                      bg-slate-900/70
+                      backdrop-blur-xl
+                      border-r
+                      border-white/10
+                      p-6
+                      hidden
+                      md:block
+                      animate-fade-in">
+
+
+            <!-- Logo -->
+
+            <div class="flex items-center gap-3 mb-12">
+
+                <div class="w-11 h-11
+                            bg-gradient-to-br
+                            from-indigo-500
+                            to-purple-600
+                            rounded-xl
+                            flex items-center
+                            justify-center
+                            text-xl
+                            shadow-lg
+                            shadow-indigo-500/30">
+
+                    🤖
+
+                </div>
+
+                <div>
+
+                    <h1 class="font-bold text-xl">
+
+                        AI Docs
+
+                    </h1>
+
+                    <p class="text-xs text-slate-400">
+
+                        Intelligent Workspace
+
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            <!-- Navigation -->
+
+            <nav class="space-y-3">
+
+
+                <button class="w-full
+                               flex items-center gap-3
+                               px-4 py-3
+                               rounded-xl
+                               bg-indigo-600/20
+                               text-indigo-400
+                               border
+                               border-indigo-500/20
+                               transition
+                               hover:bg-indigo-600/30">
+
+                    🏠
+
+                    <span>
+
+                        Dashboard
+
+                    </span>
+
+                </button>
+
+
+                <button class="w-full
+                               flex items-center gap-3
+                               px-4 py-3
+                               rounded-xl
+                               text-slate-400
+                               transition
+                               hover:bg-white/5
+                               hover:text-white">
+
+                    📄
+
+                    <span>
+
+                        Documents
+
+                    </span>
+
+                </button>
+
+
+                <button class="w-full
+                               flex items-center gap-3
+                               px-4 py-3
+                               rounded-xl
+                               text-slate-400
+                               transition
+                               hover:bg-white/5
+                               hover:text-white">
+
+                    🤖
+
+                    <span>
+
+                        AI Assistant
+
+                    </span>
+
+                </button>
+
+
+                <button class="w-full
+                               flex items-center gap-3
+                               px-4 py-3
+                               rounded-xl
+                               text-slate-400
+                               transition
+                               hover:bg-white/5
+                               hover:text-white">
+
+                    ⚙️
+
+                    <span>
+
+                        Settings
+
+                    </span>
+
+                </button>
+
+
+            </nav>
+
+
+            <!-- Bottom Card -->
+
+            <div class="absolute bottom-6 left-6 right-6
+            p-4
+            rounded-2xl
+            bg-gradient-to-br
+            from-indigo-600/20
+            to-purple-600/20
+            border
+            border-white/10">
+
+    <div class="flex items-center gap-3 mb-4">
+
+        <div class="w-10 h-10
+                    rounded-full
+                    bg-gradient-to-br
+                    from-indigo-500
+                    to-purple-600
+                    flex
+                    items-center
+                    justify-center
+                    font-bold">
+
+            {{ user_name[0] }}
+
+        </div>
+
+        <div class="min-w-0">
+
+            <p class="text-sm font-semibold truncate">
+
+                {{ user_name }}
+
+            </p>
+
+            <p class="text-xs text-slate-400">
+
+                Logged in
+
+            </p>
+
+        </div>
+
+    </div>
+
+
+    <a
+        href="/logout"
+        class="w-full
+               flex
+               items-center
+               justify-center
+               gap-2
+               px-4
+               py-2
+               rounded-xl
+               bg-red-500/10
+               text-red-300
+               hover:bg-red-500/20
+               transition">
+
+        🚪 Logout
+
+    </a>
+
+</div>
+
+        </aside>
+
+
+        <!-- MAIN CONTENT -->
+
+        <main class="flex-1 p-6 md:p-10">
+
+
+            <!-- TOPBAR -->
+
+            <div class="flex
+                        justify-between
+                        items-center
+                        mb-10
+                        animate-fade-in">
+
+
+                <div>
+
+                    <p class="text-slate-400 text-sm">
+
+                        Welcome back 👋
+
+                    </p>
+
+                    <h2 class="text-3xl
+                               md:text-4xl
+                               font-bold
+                               mt-1">
+
+                        Your AI Workspace
+
+                    </h2>
+
+                </div>
+
+
+                <div class="flex items-center gap-3">
+
+
+                    <div class="hidden sm:block text-right">
+
+                     <p class="text-sm font-semibold">
+
+                     {{ user_name }}
+
+                    </p>
+
+                    <p class="text-xs text-slate-400">
+
+                     Document Analyst
+
+                    </p>
+
+                    </div>
+
+
+                    <div class="w-11 h-11
+                                rounded-full
+                                bg-gradient-to-br
+                                from-indigo-500
+                                to-purple-600
+                                flex
+                                items-center
+                                justify-center
+                                font-bold">
+
+                        AI
+
+                    </div>
+
+                </div>
+
+
+            </div>
+
+
+            <!-- STATISTICS -->
+
+            <div class="grid
+                        grid-cols-1
+                        sm:grid-cols-3
+                        gap-5
+                        mb-8">
+
+
+                <div class="p-6
+                            rounded-2xl
+                            bg-white/5
+                            backdrop-blur-xl
+                            border
+                            border-white/10
+                            transition
+                            duration-300
+                            hover:-translate-y-2
+                            hover:border-indigo-500/40
+                            animate-slide-up">
+
+                    <div class="flex justify-between">
+
+                        <div>
+
+                            <p class="text-slate-400 text-sm">
+
+                                Total Documents
+
+                            </p>
+
+                            <h3
+                                 id="totalDocuments"
+                                 class="text-3xl font-bold mt-2">
+
+                                 0
+
+                            </h3>
+
+                        </div>
+
+                        <span class="text-3xl">
+
+                            📄
+
+                        </span>
+
+                    </div>
+
+                </div>
+
+
+                <div class="p-6
+                            rounded-2xl
+                            bg-white/5
+                            backdrop-blur-xl
+                            border
+                            border-white/10
+                            transition
+                            duration-300
+                            hover:-translate-y-2
+                            hover:border-purple-500/40
+                            animate-slide-up">
+
+                    <div class="flex justify-between">
+
+                        <div>
+
+                            <p class="text-slate-400 text-sm">
+
+                                AI Questions
+
+                            </p>
+
+                            <h3 class="text-3xl
+                                       font-bold
+                                       mt-2">
+
+                                Ready
+
+                            </h3>
+
+                        </div>
+
+                        <span class="text-3xl">
+
+                            🔍
+
+                        </span>
+
+                    </div>
+
+                </div>
+
+
+                <div class="p-6
+                            rounded-2xl
+                            bg-white/5
+                            backdrop-blur-xl
+                            border
+                            border-white/10
+                            transition
+                            duration-300
+                            hover:-translate-y-2
+                            hover:border-pink-500/40
+                            animate-slide-up">
+
+                    <div class="flex justify-between">
+
+                        <div>
+
+                            <p class="text-slate-400 text-sm">
+
+                                AI Summaries
+
+                            </p>
+
+                            <h3 class="text-3xl
+                                       font-bold
+                                       mt-2">
+
+                                Ready
+
+                            </h3>
+
+                        </div>
+
+                        <span class="text-3xl">
+
+                            📝
+
+                        </span>
+
+                    </div>
+
+                </div>
+
+
+            </div>
+
+
+            <!-- UPLOAD SECTION -->
+
+            <div class="grid
+                        lg:grid-cols-3
+                        gap-6
+                        mb-8">
+
+
+                <div class="lg:col-span-2
+                            p-8
+                            rounded-2xl
+                            bg-gradient-to-br
+                            from-indigo-600/20
+                            to-purple-600/10
+                            border
+                            border-indigo-500/20
+                            animate-slide-up">
+
+
+                    <div class="flex
+                                flex-col
+                                md:flex-row
+                                justify-between
+                                gap-6
+                                items-center">
+
+
+                        <div>
+
+                            <p class="text-indigo-400
+                                      font-semibold
+                                      mb-2">
+
+                                🚀 Start Analyzing
+
+                            </p>
+
+                            <h2 class="text-2xl
+                                       font-bold
+                                       mb-2">
+
+                                Upload a new document
+
+                            </h2>
+
+                            <p class="text-slate-400
+                                      text-sm">
+
+                                Upload your PDF and let AI understand it for you.
+
+                            </p>
+
+                        </div>
+
+
+                        <div class="text-center">
+
+
+                            <input
+                                type="file"
+                                id="pdfFile"
+                                accept=".pdf"
+                                class="hidden"
+                            >
+
+
+                            <label
+                                for="pdfFile"
+                                class="cursor-pointer
+                                       inline-block
+                                       px-6 py-3
+                                       rounded-xl
+                                       bg-white/10
+                                       border
+                                       border-white/10
+                                       hover:bg-white/20
+                                       transition">
+
+                                📁 Choose PDF
+
+                            </label>
+
+
+                            <br>
+
+
+                            <button
+                                onclick="uploadPDF()"
+                                class="mt-3
+                                       px-6 py-3
+                                       rounded-xl
+                                       bg-gradient-to-r
+                                       from-indigo-500
+                                       to-purple-600
+                                       font-semibold
+                                       shadow-lg
+                                       shadow-indigo-500/20
+                                       transition
+                                       hover:scale-105">
+
+                                Upload PDF
+
+                            </button>
+
+
+                        </div>
+
+
+                    </div>
+
+
+                    <p
+                        id="uploadMessage"
+                        class="mt-5
+                               text-sm
+                               text-indigo-300">
+
+                    </p>
+
+
+                </div>
+
+
+                <!-- QUICK ACTIONS -->
+
+                <div class="p-6
+                            rounded-2xl
+                            bg-white/5
+                            backdrop-blur-xl
+                            border
+                            border-white/10
+                            animate-slide-up">
+
+
+                    <h3 class="font-semibold
+                               text-lg
+                               mb-5">
+
+                        Quick AI Actions
+
+                    </h3>
+
+
+                    <button
+                        onclick="document.getElementById('question').focus()"
+                        class="w-full
+                               flex
+                               items-center
+                               gap-3
+                               p-4
+                               rounded-xl
+                               bg-white/5
+                               hover:bg-indigo-600/20
+                               transition
+                               mb-3">
+
+                        🔍
+
+                        <span>
+
+                            Ask AI
+
+                        </span>
+
+                    </button>
+
+
+                    <button
+                        onclick="summarizeDocument()"
+                        class="w-full
+                               flex
+                               items-center
+                               gap-3
+                               p-4
+                               rounded-xl
+                               bg-white/5
+                               hover:bg-purple-600/20
+                               transition">
+
+                        📝
+
+                        <span>
+
+                            Summarize Document
+
+                        </span>
+
+                    </button>
+
+
+                </div>
+
+
+            </div>
+
+
+            <!-- DOCUMENTS + AI WORKSPACE -->
+
+            <div class="grid
+                        lg:grid-cols-2
+                        gap-6">
+
+
+                <!-- DOCUMENTS -->
+
+                <div class="p-6
+                            rounded-2xl
+                            bg-white/5
+                            backdrop-blur-xl
+                            border
+                            border-white/10
+                            animate-slide-up">
+
+
+                    <div class="flex
+                                justify-between
+                                items-center
+                                mb-5">
+
+
+                        <h3 class="text-lg
+                                   font-semibold">
+
+                            📄 Your Documents
+
+                        </h3>
+
+
+                        <button
+                            onclick="loadDocuments()"
+                            class="text-sm
+                                   text-indigo-400
+                                   hover:text-indigo-300">
+
+                            Refresh
+
+                        </button>
+
+
+                    </div>
+
+
+                    <select
+                        id="documentSelect"
+                        class="w-full
+                               p-3
+                               rounded-xl
+                               bg-slate-900
+                               border
+                               border-white/10
+                               text-white
+                               outline-none
+                               focus:border-indigo-500">
+
+                        <option value="">
+
+                            Select a document
+
+                        </option>
+
+                    </select>
+
+
+                    <div
+                        id="documentList"
+                        class="mt-5
+                               space-y-3">
+
+                    </div>
+
+
+                </div>
+
+
+                <!-- AI WORKSPACE -->
+
+                <div class="p-6
+                            rounded-2xl
+                            bg-white/5
+                            backdrop-blur-xl
+                            border
+                            border-white/10
+                            animate-slide-up">
+
+
+                    <h3 class="text-lg
+                               font-semibold
+                               mb-5">
+
+                        🤖 AI Workspace
+
+                    </h3>
+
+
+                    <input
+                        type="text"
+                        id="question"
+                        placeholder="Ask something about your document..."
+                        class="w-full
+                               p-3
+                               rounded-xl
+                               bg-slate-900
+                               border
+                               border-white/10
+                               outline-none
+                               focus:border-indigo-500
+                               mb-3"
+                    >
+
+
+                    <button
+                        onclick="askAI()"
+                        class="w-full
+                               py-3
+                               rounded-xl
+                               bg-gradient-to-r
+                               from-indigo-500
+                               to-purple-600
+                               font-semibold
+                               transition
+                               hover:scale-[1.02]">
+
+                        🔍 Ask AI
+
+                    </button>
+
+
+                    <div class="mt-5">
+
+                        <p class="text-sm
+                                  text-slate-400
+                                  mb-2">
+
+                            AI Answer
+
+                        </p>
+
+
+                        <div
+                            id="answer"
+                            class="p-4
+                                   min-h-[80px]
+                                   rounded-xl
+                                   bg-slate-900
+                                   text-slate-300">
+
+                            Your answer will appear here.
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="mt-5">
+
+                        <button
+                            onclick="summarizeDocument()"
+                            class="w-full
+                                   py-3
+                                   rounded-xl
+                                   bg-white/10
+                                   hover:bg-white/20
+                                   transition">
+
+                            📝 Summarize Selected Document
+
+                        </button>
+
+
+                        <div
+                            id="summary"
+                            class="mt-4
+                                   p-4
+                                   min-h-[80px]
+                                   rounded-xl
+                                   bg-slate-900
+                                   text-slate-300">
+
+                            Your document summary will appear here.
+
+                        </div>
+
+                    </div>
+
+
+                </div>
+
+
+            </div>
+
+
+        </main>
+
+
+    </div>
+
+
+    <!-- Existing JavaScript -->
+
+    <script src="/static/script.js"></script>
+
+
+</body>
+
+</html>

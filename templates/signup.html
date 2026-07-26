@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>Sign Up - AI Docs</title>
+
+    <script src="https://cdn.tailwindcss.com"></script>
+
+</head>
+
+
+<body class="min-h-screen
+             bg-slate-950
+             text-white
+             flex
+             items-center
+             justify-center">
+
+
+    <div class="w-full
+                max-w-md
+                p-8
+                rounded-2xl
+                bg-white/5
+                border
+                border-white/10
+                backdrop-blur-xl">
+
+
+        <div class="text-center mb-8">
+
+            <div class="text-5xl mb-4">
+
+                🤖
+
+            </div>
+
+
+            <h1 class="text-3xl
+                       font-bold">
+
+                Create Account
+
+            </h1>
+
+
+            <p class="text-slate-400
+                      mt-2">
+
+                Start using AI Docs
+
+            </p>
+
+        </div>
+
+
+        <form
+            method="POST"
+            action="/signup">
+
+
+            <label class="block
+                          text-sm
+                          text-slate-300
+                          mb-2">
+
+                Name
+
+            </label>
+
+
+            <input
+                type="text"
+                name="name"
+                required
+                class="w-full
+                       p-3
+                       mb-5
+                       rounded-xl
+                       bg-slate-900
+                       border
+                       border-white/10
+                       outline-none
+                       focus:border-indigo-500">
+
+
+            <label class="block
+                          text-sm
+                          text-slate-300
+                          mb-2">
+
+                Email
+
+            </label>
+
+
+            <input
+                type="email"
+                name="email"
+                required
+                class="w-full
+                       p-3
+                       mb-5
+                       rounded-xl
+                       bg-slate-900
+                       border
+                       border-white/10
+                       outline-none
+                       focus:border-indigo-500">
+
+
+            <label class="block
+                          text-sm
+                          text-slate-300
+                          mb-2">
+
+                Password
+
+            </label>
+
+
+            <input
+                type="password"
+                name="password"
+                required
+                class="w-full
+                       p-3
+                       mb-6
+                       rounded-xl
+                       bg-slate-900
+                       border
+                       border-white/10
+                       outline-none
+                       focus:border-indigo-500">
+
+
+            <button
+                type="submit"
+                class="w-full
+                       py-3
+                       rounded-xl
+                       bg-gradient-to-r
+                       from-indigo-500
+                       to-purple-600
+                       font-semibold
+                       transition
+                       hover:scale-[1.02]">
+
+                Create Account
+
+            </button>
+
+
+        </form>
+
+
+        <p class="text-center
+                  text-slate-400
+                  mt-6">
+
+            Already have an account?
+
+
+            <a
+                href="/login"
+                class="text-indigo-400
+                       hover:text-indigo-300">
+
+                Login
+
+            </a>
+
+        </p>
+
+
+    </div>
+
+
+</body>
+
+</html>
