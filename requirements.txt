@@ -3,5 +3,6 @@ mysql-connector-python
 PyPDF2
 scikit-learn
 numpy
-Werkzeug
+scipy
 gunicorn
+python-dotenv
