@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, jsonify, redirect, session, url_for
+from flask import Flask, render_template, request, jsonify, redirect, session
 
 from ai_model import find_answer
 from summarizer import summarize_text
@@ -20,8 +20,20 @@ app.secret_key = "ai-docs-secret-key"
 # ========================================
 
 @app.route("/")
-def index():
-    return redirect(url_for("dashboard"))
+def home():
+
+    # If user is not logged in, show signup page
+    if "user_id" not in session:
+        return redirect("/signup")
+
+    # Get logged-in user's name
+    user_name = session.get("user_name", "User")
+
+    # Open dashboard
+    return render_template(
+        "index.html",
+        user_name=user_name
+    )
 
 
 # ========================================
@@ -134,15 +146,21 @@ def signup():
 @app.route("/login", methods=["GET", "POST"])
 def login():
 
+    # Open login page
+
     if request.method == "GET":
 
         return render_template("login.html")
 
 
+    # Get login form data
+
     email = request.form.get("email")
 
     password = request.form.get("password")
 
+
+    # Connect to database
 
     connection = get_connection()
 
@@ -152,6 +170,8 @@ def login():
 
     )
 
+
+    # Find user by email
 
     cursor.execute(
 
@@ -176,10 +196,14 @@ def login():
     connection.close()
 
 
+    # User does not exist
+
     if not user:
 
         return "Invalid email or password"
 
+
+    # Check password
 
     if not check_password_hash(
 
@@ -192,14 +216,18 @@ def login():
         return "Invalid email or password"
 
 
-    # Store user details in session
+    # Store user information in session
 
     session["user_id"] = user["id"]
 
     session["user_name"] = user["name"]
 
 
-    return redirect("/dashboard")
+    # Go to dashboard
+
+    return redirect("/")
+
+
 # ========================================
 # LOGOUT
 # ========================================
@@ -224,10 +252,14 @@ def logout():
 @app.route("/upload", methods=["POST"])
 def upload_document():
 
+    # Only logged-in users can upload
+
     if "user_id" not in session:
 
         return jsonify({
+
             "error": "Please login first"
+
         }), 401
 
 
@@ -237,13 +269,16 @@ def upload_document():
     if not file:
 
         return jsonify({
+
             "error": "No file uploaded"
+
         }), 400
 
 
     # Read PDF
 
     reader = PdfReader(file)
+
 
     extracted_text = ""
 
@@ -252,26 +287,36 @@ def upload_document():
 
         text = page.extract_text()
 
+
         if text:
 
             extracted_text += text + "\n"
 
 
+    # Check extracted text
+
     if not extracted_text.strip():
 
         return jsonify({
-            "error": "Could not extract text from PDF"
+
+            "error":
+
+            "Could not extract text from PDF"
+
         }), 400
 
+
+    # Connect to database
 
     connection = get_connection()
 
     cursor = connection.cursor()
 
 
-    # Insert document
+    # Store document with logged-in user's ID
 
     cursor.execute(
+
         """
         INSERT INTO documents
         (filename, content, user_id)
@@ -280,34 +325,15 @@ def upload_document():
         """,
 
         (
+
             file.filename,
+
             extracted_text,
+
             session["user_id"]
+
         )
-    )
 
-
-    # Get newly created document ID
-
-    document_id = cursor.lastrowid
-
-
-    # Record upload activity
-
-    cursor.execute(
-        """
-        INSERT INTO document_activity
-        (document_id, user_id, action, filename)
-
-        VALUES (%s, %s, %s, %s)
-        """,
-
-        (
-            document_id,
-            session["user_id"],
-            "UPLOADED",
-            file.filename
-        )
     )
 
 
@@ -322,9 +348,11 @@ def upload_document():
     return jsonify({
 
         "message":
+
         "PDF uploaded and stored successfully!"
 
     })
+
 
 # ========================================
 # GET USER DOCUMENTS
@@ -389,82 +417,35 @@ def get_documents():
 # ========================================
 
 @app.route(
+
     "/documents/<int:document_id>",
+
     methods=["DELETE"]
+
 )
+
 def delete_document(document_id):
+
+    # Check login
 
     if "user_id" not in session:
 
         return jsonify({
+
             "error": "Please login first"
+
         }), 401
 
 
     connection = get_connection()
 
-    cursor = connection.cursor(
-        dictionary=True
-    )
+    cursor = connection.cursor()
 
 
-    # Find document first
+    # Delete only the logged-in user's document
 
     cursor.execute(
-        """
-        SELECT filename
 
-        FROM documents
-
-        WHERE id = %s
-
-        AND user_id = %s
-        """,
-
-        (
-            document_id,
-            session["user_id"]
-        )
-    )
-
-
-    document = cursor.fetchone()
-
-
-    if not document:
-
-        cursor.close()
-
-        connection.close()
-
-
-        return jsonify({
-            "error": "Document not found"
-        }), 404
-
-
-    # Record deletion activity
-
-    cursor.execute(
-        """
-        INSERT INTO document_activity
-        (document_id, user_id, action, filename)
-
-        VALUES (%s, %s, %s, %s)
-        """,
-
-        (
-            document_id,
-            session["user_id"],
-            "DELETED",
-            document["filename"]
-        )
-    )
-
-
-    # Delete actual document
-
-    cursor.execute(
         """
         DELETE FROM documents
 
@@ -474,9 +455,13 @@ def delete_document(document_id):
         """,
 
         (
+
             document_id,
+
             session["user_id"]
+
         )
+
     )
 
 
@@ -491,6 +476,7 @@ def delete_document(document_id):
     return jsonify({
 
         "message":
+
         "Document deleted successfully"
 
     })
@@ -721,73 +707,6 @@ def summarize_document():
         "summary": summary
 
     })
-
-@app.route("/dashboard")
-def dashboard():
-
-    if "user_id" not in session:
-
-        return redirect("/signup")
-
-    return render_template(
-
-        "index.html",
-
-        user_name=session["user_name"]
-
-    )
-
-# ========================================
-# activity history api
-# ========================================
-
-@app.route("/activity", methods=["GET"])
-def get_activity():
-
-    if "user_id" not in session:
-
-        return jsonify({
-            "error": "Please login first"
-        }), 401
-
-
-    connection = get_connection()
-
-    cursor = connection.cursor(
-        dictionary=True
-    )
-
-
-    cursor.execute(
-        """
-        SELECT
-            action,
-            filename,
-            action_time
-
-        FROM document_activity
-
-        WHERE user_id = %s
-
-        ORDER BY action_time DESC
-        """,
-
-        (
-            session["user_id"],
-        )
-    )
-
-
-    activities = cursor.fetchall()
-
-
-    cursor.close()
-
-    connection.close()
-
-
-    return jsonify(activities)
-
 
 
 # ========================================
