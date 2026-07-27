@@ -20,9 +20,8 @@ app.secret_key = "ai-docs-secret-key"
 # ========================================
 
 @app.route("/")
-def home():
-
-    return redirect("/signup")
+def index():
+    return redirect(url_for("dashboard"))
 
 
 # ========================================
